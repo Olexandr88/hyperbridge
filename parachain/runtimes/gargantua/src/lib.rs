@@ -834,7 +834,6 @@ mod runtime {
 	pub type IsmpTendermint = ismp_tendermint::pallet;
 	#[runtime::pallet_index(255)]
 	pub type IsmpGrandpa = ismp_grandpa;
-
 }
 
 #[cfg(feature = "runtime-benchmarks")]

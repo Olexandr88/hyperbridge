@@ -22,7 +22,12 @@ pub mod sp1;
 #[cfg(test)]
 mod test;
 
-use alloc::{format, string::{String, ToString}, vec, vec::Vec};
+use alloc::{
+	format,
+	string::{String, ToString},
+	vec,
+	vec::Vec,
+};
 use core::marker::PhantomData;
 
 use crate::error::Error;
