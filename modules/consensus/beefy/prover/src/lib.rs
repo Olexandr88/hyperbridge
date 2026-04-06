@@ -274,7 +274,18 @@ impl<R: Config, P: Config> Prover<R, P> {
 		let leaves = heads.iter().map(|pair| keccak_256(&pair.encode())).collect::<Vec<_>>();
 		let proof = util::merkle_proof(&leaves, &indices);
 
-		let proof: Vec<[u8; 32]> = proof.into_iter().flatten().map(|(_, hash)| hash).collect();
+		let proof = proof
+			.into_iter()
+			.map(|layer| {
+				layer
+					.into_iter()
+					.map(|(index, hash)| beefy_verifier_primitives::Node {
+						index: index as u32,
+						hash: H256::from(hash),
+					})
+					.collect()
+			})
+			.collect();
 
 		let parachain = ParachainProof { parachains, proof, total_leaves: leaves.len() as u32 };
 
@@ -363,7 +374,18 @@ impl<R: Config, P: Config> Prover<R, P> {
 		let leaves = heads.iter().map(|pair| keccak_256(&pair.encode())).collect::<Vec<_>>();
 		let proof = util::merkle_proof(&leaves, &indices);
 
-		let proof: Vec<[u8; 32]> = proof.into_iter().flatten().map(|(_, hash)| hash).collect();
+		let proof = proof
+			.into_iter()
+			.map(|layer| {
+				layer
+					.into_iter()
+					.map(|(index, hash)| beefy_verifier_primitives::Node {
+						index: index as u32,
+						hash: H256::from(hash),
+					})
+					.collect()
+			})
+			.collect();
 
 		let parachain = ParachainProof { parachains, proof, total_leaves: leaves.len() as u32 };
 

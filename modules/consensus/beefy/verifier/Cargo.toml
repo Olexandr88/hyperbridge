@@ -20,6 +20,7 @@ merkle-mountain-range = {workspace = true, default-features = false}
 rs_merkle = {workspace = true, default-features = false}
 thiserror = { workspace = true }
 sp1-verifier = { git = "https://github.com/dharjeezy/sp1.git", branch = "dami/sp1-verifier-wasm-compatible-changes", default-features = false }
+alloy-sol-types = { workspace = true, default-features = false }
 
 [dependencies.polkadot-sdk]
 workspace = true
@@ -52,4 +53,5 @@ std = [
     "merkle-mountain-range/std",
     "rs_merkle/std",
     "sp1-verifier/std",
+    "alloy-sol-types/std",
 ]

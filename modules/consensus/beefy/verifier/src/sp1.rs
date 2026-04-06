@@ -17,9 +17,19 @@
 
 use crate::{error::Error, verify_parachain_headers};
 use alloc::vec::Vec;
+use alloy_sol_types::{SolValue, sol};
 use beefy_verifier_primitives::{ConsensusState, ParachainHeader, Sp1BeefyProof};
 use codec::Encode;
 use ismp::messaging::Keccak256;
+
+sol! {
+	struct PublicInputs {
+		bytes32 authorities_root;
+		uint256 authorities_len;
+		bytes32 leaf_hash;
+		bytes32[] headers;
+	}
+}
 
 /// Verify an SP1 BEEFY consensus proof and return the updated consensus state
 /// and verified parachain headers.
@@ -78,24 +88,23 @@ fn build_sp1_public_inputs<H: Keccak256>(
 	authority_root: [u8; 32],
 	authority_len: u32,
 ) -> Vec<u8> {
+	use alloy_sol_types::private::FixedBytes;
+
 	let leaf_hash: [u8; 32] = H::keccak256(&proof.mmr_leaf.encode()).into();
 
-	let headers: Vec<[u8; 32]> = proof
+	let headers: Vec<FixedBytes<32>> = proof
 		.parachain
 		.parachains
 		.iter()
-		.map(|h| H::keccak256(&h.header).into())
+		.map(|h| FixedBytes::from(Into::<[u8; 32]>::into(H::keccak256(&h.header))))
 		.collect();
 
-	let mut encoded = Vec::new();
-	encoded.extend_from_slice(&authority_root);
-	encoded.extend_from_slice(&{
-		let mut buf = [0u8; 32];
-		buf[28..32].copy_from_slice(&authority_len.to_be_bytes());
-		buf
-	});
-	encoded.extend_from_slice(&leaf_hash);
-	headers.iter().for_each(|h| encoded.extend_from_slice(h));
+	let inputs = PublicInputs {
+		authorities_root: FixedBytes::from(authority_root),
+		authorities_len: alloy_sol_types::private::U256::from(authority_len),
+		leaf_hash: FixedBytes::from(leaf_hash),
+		headers,
+	};
 
-	encoded
+	inputs.abi_encode()
 }

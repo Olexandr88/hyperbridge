@@ -2850,6 +2850,7 @@ dependencies = [
 name = "beefy-verifier"
 version = "0.1.0"
 dependencies = [
+ "alloy-sol-types 1.5.7",
  "anyhow",
  "beefy-prover",
  "beefy-verifier-primitives",
@@ -10367,6 +10368,21 @@ dependencies = [
  "polkadot-sdk",
  "primitive-types 0.13.1",
  "scale-info",
+]
+
+[[package]]
+name = "ismp-beefy"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "beefy-verifier",
+ "beefy-verifier-primitives",
+ "ismp",
+ "pallet-ismp",
+ "parity-scale-codec",
+ "polkadot-sdk",
+ "primitive-types 0.13.1",
+ "substrate-state-machine",
 ]
 
 [[package]]

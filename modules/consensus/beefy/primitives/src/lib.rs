@@ -107,7 +107,7 @@ pub struct ParachainProof {
 	pub parachains: Vec<ParachainHeader>,
 
 	/// Proof for parachain header inclusion in the parachain headers root
-	pub proof: Vec<[u8; 32]>,
+	pub proof: Vec<Vec<Node>>,
 	/// Total leaves count for the proof
 	pub total_leaves: u32,
 }
@@ -141,8 +141,6 @@ pub struct BeefyMmrLeaf {
 	pub parent_block_and_hash: (u32, H256),
 	/// The authority set that will be active in the next BEEFY session.
 	pub beefy_next_authority_set: BeefyAuthoritySet<H256>,
-	/// The k-index of the leaf, used in MMR calculations.
-	pub k_index: u32,
 	/// The sequential index of this leaf in the MMR.
 	pub leaf_index: u32,
 	/// An extra data field
@@ -159,7 +157,7 @@ pub struct RelaychainProof {
 	/// Proof for the latest mmr leaf
 	pub mmr_proof: Vec<H256>,
 	/// Proof for authorities in current/next session
-	pub proof: Vec<H256>,
+	pub proof: Vec<Vec<Node>>,
 }
 
 /// Represents a complete BEEFY consensus proof.

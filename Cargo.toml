@@ -43,6 +43,7 @@ members = [
     "modules/ismp/clients/ismp-optimism",
     "modules/ismp/clients/polygon",
     "modules/ismp/clients/tendermint",
+    "modules/ismp/clients/beefy",
     "modules/pallets/collator-manager",
 
     # cryptography
@@ -326,6 +327,7 @@ pallet-intents-coprocessor = { path = "modules/pallets/intents-coprocessor", def
 pallet-intents-rpc = { path = "modules/pallets/intents-coprocessor/rpc" }
 pallet-token-gateway-inspector = { path = "modules/pallets/token-gateway-inspector", default-features = false }
 pallet-bridge-airdrop = { path = "modules/pallets/bridge-drop", default-features = false }
+ismp-beefy = { path = "modules/ismp/clients/beefy", default-features = false }
 
 # merkle trees
 ethereum-triedb = { version = "0.1.1", path = "./modules/trees/ethereum", default-features = false }

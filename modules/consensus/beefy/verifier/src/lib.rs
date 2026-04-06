@@ -165,7 +165,8 @@ fn verify_mmr_update_proof<H: Keccak256 + EcdsaRecover + Send + Sync>(
 		authority_indices.push(sig.index as usize);
 	}
 
-	let proof_hashes: Vec<[u8; 32]> = relay_proof.proof.iter().map(|h| (*h).into()).collect();
+	let proof_hashes: Vec<[u8; 32]> =
+		relay_proof.proof.iter().flatten().map(|node| node.hash.into()).collect();
 	let merkle_proof = MerkleProof::<MerkleHasher<H>>::new(proof_hashes);
 
 	let valid = if is_current_authorities {
@@ -223,7 +224,7 @@ pub fn verify_parachain_headers<H: Keccak256>(
 	let (leaf_indices, leaf_hashes): (Vec<usize>, Vec<[u8; 32]>) =
 		indexed_leaf_hashes.into_iter().unzip();
 	let proof_hashes: Vec<[u8; 32]> =
-		parachain_proof.proof.iter().map(|node| (*node).into()).collect();
+		parachain_proof.proof.iter().flatten().map(|node| node.hash.into()).collect();
 	let merkle_proof = MerkleProof::<MerkleHasher<H>>::new(proof_hashes);
 	let valid = merkle_proof.verify(
 		heads_root.0,

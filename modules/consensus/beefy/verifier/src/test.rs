@@ -173,8 +173,15 @@ async fn test_verify_consensus() {
 	let authority_proof_2d = merkle_proof(&authority_address_hashes, &authority_indices);
 	let authority_proof_nodes = authority_proof_2d
 		.into_iter()
-		.flatten()
-		.map(|(_, hash)| H256::from(hash))
+		.map(|layer| {
+			layer
+				.into_iter()
+				.map(|(index, hash)| beefy_verifier_primitives::Node {
+					index: index as u32,
+					hash: H256::from(hash),
+				})
+				.collect()
+		})
 		.collect();
 
 	let signed_commitment = beefy_verifier_primitives::SignedCommitment {
@@ -189,7 +196,6 @@ async fn test_verify_consensus() {
 			latest_leaf.parent_number_and_hash.1,
 		),
 		beefy_next_authority_set: latest_leaf.beefy_next_authority_set.clone(),
-		k_index: 0,
 		leaf_index: mmr_leaf_proof.leaf_indices[0] as u32,
 		extra: latest_leaf.leaf_extra,
 	};
@@ -225,7 +231,18 @@ async fn test_verify_consensus() {
 
 	let leaves = heads.iter().map(|pair| keccak_256(&pair.encode())).collect::<Vec<_>>();
 	let proof_2d = merkle_proof(&leaves, &indices);
-	let proof = proof_2d.into_iter().flatten().map(|(_, hash)| hash).collect();
+	let proof = proof_2d
+		.into_iter()
+		.map(|layer| {
+			layer
+				.into_iter()
+				.map(|(index, hash)| beefy_verifier_primitives::Node {
+					index: index as u32,
+					hash: H256::from(hash),
+				})
+				.collect()
+		})
+		.collect();
 	let parachain_proof = ParachainProof { parachains, proof, total_leaves: leaves.len() as u32 };
 
 	println!("Assembling final proof for verification");
